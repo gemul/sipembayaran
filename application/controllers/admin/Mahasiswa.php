@@ -13,6 +13,7 @@ class Mahasiswa extends CI_Controller {
 	{
 		// load view admin/mahasiswa.php
 		$this->load->view("admin/mahasiswa/index");
+		asdfsdaf
 	}
 	public function add()
 	{

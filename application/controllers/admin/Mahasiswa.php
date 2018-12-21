@@ -4,6 +4,7 @@ class Mahasiswa extends CI_Controller {
 	function __construct(){
 		parent::__construct();
 	
+		$this->load->model('m_mahasiswa');
 		if($this->session->userdata('status') != "login"){
 			redirect(base_url("login"));
 		}
@@ -13,7 +14,6 @@ class Mahasiswa extends CI_Controller {
 	{
 		// load view admin/mahasiswa.php
 		$this->load->view("admin/mahasiswa/index");
-		asdfsdaf
 	}
 	public function add()
 	{
@@ -21,9 +21,30 @@ class Mahasiswa extends CI_Controller {
 		$data=Array('judul'=>'Tambah Data Mahasiswa');
 		$this->load->view("admin/mahasiswa/add",$data);
 	}
+	public function list_mahasiswa()
+	{
+		$list = $this->m_mahasiswa->get_datatables();
+		$returnData=Array();
+		$returnData['draw']=$_POST['draw'];
+		$returnData['recordsTotal']=$this->m_mahasiswa->count_all();
+		$returnData['recordsFiltered']=$this->m_mahasiswa->count_filtered();
+		$returnData['data']=Array();
+		$no=1;
+        foreach ($list as $field) {
+            $no++;
+            $row = array();
+            $row[] = $field->mhs_nim;
+            $row[] = $field->mhs_nama;
+ 
+            $returnData['data'][] = $row;
+        }
+
+
+		echo json_encode($returnData);
+	}
 	public function batchEntry()
 	{
-
+		return true;
 		$this->load->helper('file');
 		if (($handle = fopen("storage/mahasiswa.csv", "r")) !== FALSE) {
 			$row=0;
@@ -34,6 +55,10 @@ class Mahasiswa extends CI_Controller {
 			for ($c=0; $c < $num; $c++) {
 				echo $data[$c] . "<br />\n";
 			}
+			$this->m_mahasiswa->add(Array(
+				'mhs_nim'=>$data[0],
+				'mhs_nama'=>$data[1]
+			));
 		}
 		fclose($handle);
 		}

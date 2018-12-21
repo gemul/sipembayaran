@@ -19,3 +19,7 @@
 
 	<!-- Custom styles for this template-->
 	<link href="<?php echo base_url('css/sb-admin.css') ?>" rel="stylesheet">
+	<link href="<?php echo base_url('css/dataTables.bootstrap4.min.css') ?>" rel="stylesheet">
+	
+	<!-- Jquery at head, to get rid of $ is not defined sudrajat -->
+	<script src="<?php echo base_url('assets/jquery/jquery.min.js') ?>"></script>

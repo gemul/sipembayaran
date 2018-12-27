@@ -72,4 +72,16 @@ class M_mahasiswa extends CI_Model{
         $this->db->from($this->table);
         return $this->db->count_all_results();
     }
+
+    public function getMahasiswa($search,$page){
+        $perPage=15;
+        $this->db->from($this->table);
+        $this->db->like('mhs_nim', $search);
+        $this->db->or_like('mhs_nama', $search);
+        $this->db->order_by('mhs_nim', 'asc');
+        $curpage=($page-1)*$perPage;
+        $this->db->limit($perPage, $curpage);
+        $query = $this->db->get();
+        return $query->result();
+    }
 }

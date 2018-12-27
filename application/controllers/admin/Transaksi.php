@@ -5,6 +5,7 @@ class Transaksi extends CI_Controller {
 		parent::__construct();
 	
 		$this->load->model('m_pembayaran');
+		$this->load->model('m_mahasiswa');
 		if($this->session->userdata('status') != "login"){
 			redirect(base_url("login"));
 		}
@@ -23,6 +24,17 @@ class Transaksi extends CI_Controller {
 		// load view admin/mahasiswa.php
 		$data=Array('judul'=>'Tambah Data Mahasiswa');
 		$this->load->view("admin/mahasiswa/add",$data);
+	}
+	public function mahasiswa_select(){
+		$list = $this->m_mahasiswa->getMahasiswa($_GET['search'],$_GET['page']);
+		$results=Array();
+		foreach($list as $item){
+			array_push($results,Array('id'=>$item->mhs_id,'text'=>$item->mhs_nim." - ".$item->mhs_nama));
+		}
+		$final=Array();
+		$final['results']=$results;
+		$final['pagination']=Array("more"=>"true");
+		echo json_encode($final);
 	}
 	public function list_mahasiswa()
 	{

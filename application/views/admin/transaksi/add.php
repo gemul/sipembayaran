@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
 	<?php $this->load->view("admin/_parts/head.php") ?>
+
+	<link rel="stylesheet" href="<?php echo base_url('css/flatpickr.min.css') ?>">
+	<link rel="stylesheet" href="<?php echo base_url('css/select2.min.css') ?>">
+	<link rel="stylesheet" href="<?php echo base_url('css/select2-bootstrap4.min.css') ?>">
 </head>
 <body id="page-top">
 
@@ -33,9 +37,6 @@
 								</div> 
 								<select id="mahasiswa" name="mahasiswa" placeholder="Masukkan nim atau nama untuk mencari" required="required" class="form-control"> 
 								</select>
-								<div class="input-group-append">
-									<button class="btn btn-info" type="button"><i class="fa fa-search"></i></button>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -124,8 +125,6 @@
 <?php $this->load->view("admin/_parts/modal.php") ?>
 <?php $this->load->view("admin/_parts/js.php") ?>
 
-<link rel="stylesheet" href="<?php echo base_url('css/flatpickr.min.css') ?>">
-<link rel="stylesheet" href="<?php echo base_url('css/select2.min.css') ?>">
 <script src="<?php echo base_url('js/moment.min.js') ?>"></script>
 <script src="<?php echo base_url('js/number-divider.min.js') ?>"></script>
 <script src="<?php echo base_url('js/flatpickr.js') ?>"></script>
@@ -143,7 +142,31 @@ $(document).ready(function(){
 		altFormat: "j F Y",
 		dateFormat: "Y-m-d",
 	});
-    $('#mahasiswa').select2();
+    $('#mahasiswa').select2({
+		theme:'bootstrap4',
+		ajax: {
+			delay: 250,
+			url: 'transaksi/mahasiswa_select',
+			dataType: 'json',
+			data: function (params) {
+				var query = {
+					search: params.term,
+					type: 'public',
+					page: params.page || 1
+				}
+
+				// Query parameters will be ?search=[term]&type=public
+				return query;
+			},
+			processResults: function (data) {
+				return data;
+				// return {
+				// 	results: data.text
+				// };
+			},
+			// Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+		}
+	});
 });
 </script>
 </body>

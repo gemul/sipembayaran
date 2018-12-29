@@ -25,7 +25,16 @@
 					Pembayaran
 				</div>
 				<div class="card-body">
-					<form>
+					<?php
+						if(isset($status)){
+							if($status=='ok'){
+								echo "<div class='alert alert-success'>".$message."</div>";
+							}else{
+								echo "<div class='alert alert-danger'>".$message."</div>";
+							}
+						}
+					?>
+					<form method='post' action="<?php echo base_url('admin/transaksi/save') ?>">
 					<div class="form-group row">
 						<label for="mahasiswa" class="col-4 col-form-label">Mahasiswa</label> 
 						<div class="col-8">
@@ -41,9 +50,9 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label for="Jenis" class="col-4 col-form-label">Jenis</label> 
+						<label for="jenis" class="col-4 col-form-label">Jenis</label> 
 						<div class="col-8">
-						<select id="Jenis" name="Jenis" required="required" class="custom-select">
+						<select id="jenis" name="jenis" required="required" class="custom-select">
 							<?php
 							foreach($arrJenis as $itemJenis):
 							?>
@@ -69,6 +78,25 @@
 						</div>
 					</div>
 					<div class="form-group row">
+						<label for="biaya" class="col-4 col-form-label">Biaya</label> 
+						<div class="col-8">
+							<span id="biaya">Pilih mahasiswa</span>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="terbayar" class="col-4 col-form-label">Terbayar</label> 
+						<div class="col-8">
+							<span id="terbayar">Pilih mahasiswa</span>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="tanggungan" class="col-4 col-form-label">Sisa tanggungan</label> 
+						<div class="col-8">
+							<span id="tanggungan">Pilih mahasiswa</span>
+							<span id="tanggungan_baru"></span>
+						</div>
+					</div>
+					<div class="form-group row">
 						<label for="nominal" class="col-4 col-form-label">Nominal</label> 
 						<div class="col-8">
 						<div class="input-group">
@@ -77,7 +105,7 @@
 									<i class="fa fa-money-bill"></i>
 								</div> 
 							</div> 
-							<input id="nominal" name="nominal" placeholder="Masukkan nominal" type="text" class="form-control divided" required="required">
+							<input id="nominal" name="nominal" placeholder="Masukkan nominal" type="text" class="form-control divided" required="required" autocomplete="off">
 						</div>
 						</div>
 					</div>
@@ -97,7 +125,7 @@
 					<div class="form-group row">
 						<label for="keterangan" class="col-4 col-form-label">Keterangan</label> 
 						<div class="col-8">
-						<textarea id="keterangan" name="keterangan" cols="40" rows="5" class="form-control"></textarea>
+						<textarea id="keterangan" name="keterangan" cols="40" rows="3" class="form-control"></textarea>
 						</div>
 					</div> 
 					<div class="form-group row">
@@ -108,6 +136,9 @@
 					</form>
 				</div>
 			</div>
+			<script>
+			
+			</script>
 		</div>
 		<!-- /.container-fluid -->
 
@@ -135,6 +166,9 @@ $('.divided').divide({
   divideThousand: true, // 1,000..9,999
   delimiterRegExp: /[\.\,\s]/g
 });
+
+var selectedMahasiswa=0;
+var tanggungan=0;
 $(document).ready(function(){
 	$('#waktu').flatpickr({
 		defaultDate:"today",
@@ -146,7 +180,7 @@ $(document).ready(function(){
 		theme:'bootstrap4',
 		ajax: {
 			delay: 250,
-			url: 'transaksi/mahasiswa_select',
+			url: '<?php echo base_url('admin/transaksi/mahasiswa_select') ?>',
 			dataType: 'json',
 			data: function (params) {
 				var query = {
@@ -167,7 +201,65 @@ $(document).ready(function(){
 			// Additional AJAX parameters go here; see the end of this chapter for the full code of this example
 		}
 	});
+	$('#mahasiswa').on('select2:select', function (e) {
+		// console.log($(this).val());
+		selectedMahasiswa = $(this).val();
+		updateTanggungan();
+	});
+	$('#jenis').on('change',function(e){
+		updateTanggungan();
+	});
+	$('#semester').on('change',function(e){
+		updateTanggungan();
+	});
+	$('#nominal').on('keyup',function(e){
+		let nominal=$(this).val();
+		if(tanggungan!=0 && nominal!=0){
+			$('#tanggungan_baru').html("--&gt;"+(tanggungan-nominal).toLocaleString('id'));
+		}else{
+			$('#tanggungan_baru').html("");
+		}
+	});
 });
+
+function updateTanggungan(){
+	var mahasiswa	= selectedMahasiswa;
+	var jenis		= $('#jenis').val();
+	var semester	= $('#semester').val();
+	console.log("<?php echo base_url('admin/transaksi/ajaxTanggungan') ?>");
+	$.ajax({
+		url:"<?php echo base_url('admin/transaksi/ajaxTanggungan') ?>",
+		data:{
+			'mahasiswa':mahasiswa,
+			'jenis':jenis,
+			'semester':semester
+		},
+		dataType:"json",
+		type:"GET",
+		beforeSend:function(){
+			$('#biaya').html("Menghitung Tanggungan Biaya...");
+			$('#terbayar').html("Menghitung Tanggungan Biaya...");
+			$('#tanggungan').html("Menghitung Tanggungan Biaya...");
+			$('#tanggungan_baru').html("");
+		},
+		success:function(result){
+			$('#biaya').html(result.textBiaya);
+			$('#terbayar').html(result.textTerbayar);
+			$('#tanggungan').html(result.textTanggungan);
+			tanggungan=result.tanggungan;
+			let nominal=$('#nominal').val();
+			if(tanggungan!=0 && nominal!=0){
+				$('#tanggungan_baru').html("--&gt;"+(tanggungan-nominal).toLocaleString('id'));
+			}
+		},
+		error:function(result){
+			$('#biaya').html("Terjadi kesalahan saat menghitung tanggungan biaya");
+			$('#terbayar').html("Terjadi kesalahan saat menghitung tanggungan biaya");
+			$('#tanggungan').html("Terjadi kesalahan saat menghitung tanggungan biaya");
+		}
+	});
+
+}
 </script>
 </body>
 </html>

@@ -9,9 +9,10 @@ class M_mahasiswa extends CI_Model{
 		return $this->db->insert($this->table,$data);
     }
     
-    function getData(){
-        return $this->db->insert($this->table,$data);
+    function getSingleMahasiswa($id){
+        return $this->db->get_where($this->table, array('mhs_id' => $id), 1, 0)->row();
     }
+
     private function _get_datatables_query()
     {
          

@@ -1,10 +1,10 @@
 <?php 
 
 class M_pembayaran extends CI_Model{	
-    private $table="mahasiswa";
-    var $column_order = array(null, 'mhs_nim','mhs_nama'); //field yang ada di table user
-    var $column_search = array('mhs_nim','mhs_nama'); //field yang diizin untuk pencarian 
-    var $order = array('mhs_nim' => 'asc'); // default order 
+    private $table="pembayaran";
+    var $column_order = array('pmb_waktu','mhs_nim','mhs_nama','pmb_jenis','pmb_semester','pmb_nominal'); //field yang ada di table user
+    var $column_search = array('mhs_nama','pmb_jenis','mhs_nim'); //field yang diizin untuk pencarian 
+    var $order = array('pmb_waktu' => 'desc'); // default order 
 	function add($data){
 		return $this->db->insert($this->table,$data);
     }
@@ -15,11 +15,19 @@ class M_pembayaran extends CI_Model{
     function getData(){
         return $this->db->insert($this->table,$data);
     }
+
+    function savePembayaran($data_pembayaran){
+        $this->db->insert($this->table, $data_pembayaran);
+        $insert_id = $this->db->insert_id();
+
+        return  $insert_id;
+    }
+
     private function _get_datatables_query()
     {
          
         $this->db->from($this->table);
- 
+        $this->db->join('mahasiswa','mhs_id');
         $i = 0;
      
         foreach ($this->column_search as $item) // looping awal
@@ -74,5 +82,35 @@ class M_pembayaran extends CI_Model{
     {
         $this->db->from($this->table);
         return $this->db->count_all_results();
+    }
+
+    public function getTanggungan($mhs_id,$jenis,$semester){
+        $this->db->from('tanggungan');
+        $this->db->where('mhs_id',$mhs_id);
+        $this->db->where('tgg_jenis',$jenis);
+        $this->db->where('tgg_semester',$semester);
+        $query=$this->db->get();
+        if($query->num_rows()>=1){
+            //tanggungan sudah ditentukan
+            return $query->row()->tgg_nominal;
+        }else{
+            //tanggungan belum ditentukan
+            return false;
+        }
+    }
+    public function getTerbayar($mhs_id,$jenis,$semester){
+        $this->db->from('pembayaran');
+        $this->db->select('sum(pmb_nominal) as total_terbayar');
+        $this->db->where('mhs_id',$mhs_id);
+        $this->db->where('pmb_jenis',$jenis);
+        $this->db->where('pmb_semester',$semester);
+        $query=$this->db->get();
+        if($query->num_rows()>=1){
+            //tanggungan sudah ditentukan
+            return $query->row()->total_terbayar;
+        }else{
+            //tanggungan belum ditentukan
+            return false;
+        }
     }
 }

@@ -17,6 +17,11 @@
             <a class="dropdown-item" href="<?php echo site_url('admin/products') ?>">List Product</a>
         </div>
     </li>
+    <li class="nav-item  <?php echo $this->uri->segment(2) == 'tanggungan' ? 'active': '' ?>">
+        <a class="nav-link" href="<?php echo site_url('admin/tanggungan') ?>">
+            <i class="fas fa-fw fa-clipboard"></i>
+            <span>Biaya Mahasiswa</span></a>
+    </li>
     <li class="nav-item  <?php echo $this->uri->segment(2) == 'transaksi' ? 'active': '' ?>">
         <a class="nav-link" href="<?php echo site_url('admin/transaksi') ?>">
             <i class="fas fa-fw fa-money-bill"></i>

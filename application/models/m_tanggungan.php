@@ -14,14 +14,29 @@ class M_tanggungan extends CI_Model{
     }
 
     function getData(){
-        return $this->db->insert($this->table,$data);
+        return $this->db->get($this->table,$data);
     }
 
-    function savePembayaran($data_pembayaran){
-        $this->db->insert($this->table, $data_pembayaran);
+    function saveTanggungan($data_tanggungan){
+        $this->db->insert($this->table, $data_tanggungan);
         $insert_id = $this->db->insert_id();
-
+    
         return  $insert_id;
+    }
+
+    public function getTanggunganFull($mhs_id,$jenis,$semester){
+        $this->db->from('tanggungan');
+        $this->db->where('mhs_id',$mhs_id);
+        $this->db->where('tgg_jenis',$jenis);
+        $this->db->where('tgg_semester',$semester);
+        $query=$this->db->get();
+        if($query->num_rows()>=1){
+            //tanggungan sudah ditentukan
+            return $query->row();
+        }else{
+            //tanggungan belum ditentukan
+            return false;
+        }
     }
 
     private function _get_datatables_query()

@@ -34,7 +34,7 @@
 							}
 						}
 					?>
-					<form method='post' action="#" id="form-tanggungan">
+					<form method='post' onsubmit="return false;" id="form-tanggungan">
 					<div class="form-group row">
 						<label for="mahasiswa" class="col-4 col-form-label">Mahasiswa</label> 
 						<div class="col-8">
@@ -63,36 +63,36 @@
 								?>
 								<tr>
 									<td><?=$i?></td>
-									<td><input type='text' class='form-control divided inputan' id="tanggungan_SPP_<?=$i?>" name="tanggungan_SPP_<?=$i?>" ></td>
-									<td><input type='text' class='form-control divided inputan' id="tanggungan_UAS_<?=$i?>" name="tanggungan_UAS_<?=$i?>" ></td>
-									<td><input type='text' class='form-control divided inputan' id="tanggungan_UTS_<?=$i?>" name="tanggungan_UTS_<?=$i?>" ></td>
+									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_SPP_<?=$i?>" name="tanggungan_SPP_<?=$i?>" ></td>
+									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_UAS_<?=$i?>" name="tanggungan_UAS_<?=$i?>" ></td>
+									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_UTS_<?=$i?>" name="tanggungan_UTS_<?=$i?>" ></td>
 								</tr>
 								<?php
 								endfor;
 								?>
 								<tr>
 									<td colspan="3">Herregistrasi</td>
-									<td><input type='text' class='form-control divided inputan' id="tanggungan_HER" name="tanggungan_HER" ></td>
+									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_HER" name="tanggungan_HER" ></td>
 								</tr>
 								<tr>
 									<td colspan="3">OPSPEK</td>
-									<td><input type='text' class='form-control divided inputan' id="tanggungan_OPSPEK" name="tanggungan_OPSPEK" ></td>
+									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_OPSPEK" name="tanggungan_OPSPEK" ></td>
 								</tr>
 								<tr>
 									<td colspan="3">Uang Gedung</td>
-									<td><input type='text' class='form-control divided inputan' id="tanggungan_UG" name="tanggungan_UG" ></td>
+									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_UG" name="tanggungan_UG" ></td>
 								</tr>
 								<tr>
 									<td colspan="3">KKN</td>
-									<td><input type='text' class='form-control divided inputan' id="tanggungan_KKN" name="tanggungan_KKN" ></td>
+									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_KKN" name="tanggungan_KKN" ></td>
 								</tr>
 								<tr>
 									<td colspan="3">Skripsi</td>
-									<td><input type='text' class='form-control divided inputan' id="tanggungan_SKRIPSI" name="tanggungan_SKRIPSI" ></td>
+									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_SKRIPSI" name="tanggungan_SKRIPSI" ></td>
 								</tr>
 								<tr>
 									<td colspan="3">Wisuda</td>
-									<td><input type='text' class='form-control divided inputan' id="tanggungan_WISUDA" name="tanggungan_WISUDA" ></td>
+									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_WISUDA" name="tanggungan_WISUDA" ></td>
 								</tr>
 							</table>
 						</div>
@@ -100,10 +100,10 @@
 					<div class="form-group row">
 						<label for="mahasiswa" class="offset-4 col-1 col-form-label">PIN</label> 
 						<div class="col-2">
-						<input type='password' class='form-control' name="pin"  >
+						<input type='password' class='form-control inputan' name="pin"  >
 						</div>
 						<div class="col-5">
-						<button name="submit" type="submit" class="btn btn-primary">Simpan</button>
+						<button type="button" class="btn btn-primary" id="tombolSimpan" onclick="saveTanggungan()" >Simpan</button>
 						</div>
 					</div>
 					</form>
@@ -180,6 +180,34 @@ $(document).ready(function(){
 		updateTanggungan();
 	});
 });
+
+function saveTanggungan(){
+	var src="<?php echo base_url('admin/tanggungan/save') ?>";
+	var formData=$("#form-tanggungan").serialize();
+	$.ajax({
+		url:src,
+		data:formData,
+		dataType:"json",
+		type:"POST",
+		beforeSend:function(){
+			$('.inputan').prop("disabled",true);
+			$('#tombolSimpan').html("Menyimpan...").prop("disabled",true);
+		},
+		success:function(result){
+			if(result.status=="salah"){
+				alert("PIN Salah");
+			}else if(result.status=="ok"){
+				alert("Data berhasil disimpan");
+			}
+			$('#tombolSimpan').html("Simpan").prop("disabled",false);
+			$('.inputan').prop("disabled",false);
+		},
+		error:function(result){
+			$('.inputan').prop("disabled",false);
+			$('#tombolSimpan').html("Simpan").prop("disabled",false);
+		}
+	});
+}
 
 function updateTanggungan(){
 	var mahasiswa	= selectedMahasiswa;

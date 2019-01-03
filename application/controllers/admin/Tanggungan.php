@@ -35,8 +35,41 @@ class Tanggungan extends CI_Controller {
 	}
 	public function save()
 	{
-		$user=$this->m_user->getSingleUserFromUsername($this->session->userdata('nama'));
 		$data=$_POST;
+		if($data['pin']!='111111'){
+			echo json_encode(['status'=>'salah','message'=>'Pin anda salah.']);
+			return false;
+		}else{
+			$mahasiswa=$data['mahasiswa'];
+			$savedTanggungan=Array();
+			foreach($data as $namainput=>$inputan){
+				$arrinput=explode("_",$namainput);
+				if(count($arrinput)>=2){
+					$jenis=$arrinput[1];
+					$smt=(isset($arrinput[2]))?$arrinput[2]:1;
+					$val=$inputan;
+					if($val!=''){
+						// $=$this->m_tanggungan->saveTanggungan($query)
+						$query=Array(
+							'mhs_id'=>$mahasiswa,
+							'tgg_semester'=>$smt,
+							'tgg_jenis'=>$jenis,
+							'tgg_nominal'=>$val,
+							'tgg_tahun'=>'2019',
+						);
+
+						if($id=$this->m_tanggungan->saveTanggungan($query)){
+							$savedTanggungan[$id]=$query;
+						}
+					}
+
+				}
+			}
+			echo json_encode(['status'=>'ok','message'=>'Tanggungan disimpan.','data'=>$savedTanggungan]);
+			return false;
+		}
+
+		return false;
 		$query=Array(
 			'mhs_id'=>$_POST['mahasiswa'],
 			'user_id'=>$user->user_id,

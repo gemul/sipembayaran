@@ -57,6 +57,7 @@
 									<td>SPP</td>
 									<td>UAS</td>
 									<td>UTS</td>
+									<td>HER</td>
 								</tr>
 								<?php
 								for($i=1;$i<=10;$i++):
@@ -66,32 +67,33 @@
 									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_SPP_<?=$i?>" name="tanggungan_SPP_<?=$i?>" ></td>
 									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_UAS_<?=$i?>" name="tanggungan_UAS_<?=$i?>" ></td>
 									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_UTS_<?=$i?>" name="tanggungan_UTS_<?=$i?>" ></td>
+									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_HER_<?=$i?>" name="tanggungan_HER_<?=$i?>" ></td>
 								</tr>
 								<?php
 								endfor;
 								?>
 								<tr>
-									<td colspan="3">Herregistrasi</td>
+									<td colspan="4">Herregistrasi</td>
 									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_HER" name="tanggungan_HER" ></td>
 								</tr>
 								<tr>
-									<td colspan="3">OPSPEK</td>
+									<td colspan="4">OPSPEK</td>
 									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_OPSPEK" name="tanggungan_OPSPEK" ></td>
 								</tr>
 								<tr>
-									<td colspan="3">Uang Gedung</td>
+									<td colspan="4">Uang Gedung</td>
 									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_UG" name="tanggungan_UG" ></td>
 								</tr>
 								<tr>
-									<td colspan="3">KKN</td>
+									<td colspan="4">KKN</td>
 									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_KKN" name="tanggungan_KKN" ></td>
 								</tr>
 								<tr>
-									<td colspan="3">Skripsi</td>
+									<td colspan="4">Skripsi</td>
 									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_SKRIPSI" name="tanggungan_SKRIPSI" ></td>
 								</tr>
 								<tr>
-									<td colspan="3">Wisuda</td>
+									<td colspan="4">Wisuda</td>
 									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_WISUDA" name="tanggungan_WISUDA" ></td>
 								</tr>
 							</table>
@@ -234,9 +236,9 @@ function updateTanggungan(){
 				if(result['tanggungan_UTS_'+i]!==undefined){
 					$('#tanggungan_UTS_'+i).val(result['tanggungan_UTS_'+i]);
 				}
-			}
-			if(result['tanggungan_HER']!==undefined){
-				$("#tanggungan_HER").val(result['tanggungan_HER']);
+				if(result['tanggungan_HER_'+i]!==undefined){
+					$('#tanggungan_HER_'+i).val(result['tanggungan_HER_'+i]);
+				}
 			}
 			if(result['tanggungan_OPSPEK']!==undefined){
 				$("#tanggungan_OPSPEK").val(result['tanggungan_OPSPEK']);

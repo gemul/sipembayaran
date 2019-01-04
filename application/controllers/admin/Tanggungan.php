@@ -22,10 +22,17 @@ class Tanggungan extends CI_Controller {
 		$this->load->view("admin/tanggungan/add",$data);
 	}
 	
-	public function listTransaksi()
+	public function report_all()
 	{
 		// load view admin/mahasiswa.php
-		$this->load->view("admin/transaksi/list");
+		$data=['dataTagihan'=>$this->m_tanggungan->getTanggunganFull()];
+		$this->load->view("admin/tanggungan/report-all",$data);
+	}
+	public function report_all_csv()
+	{
+		// load view admin/mahasiswa.php
+		$data=['dataTagihan'=>$this->m_tanggungan->getTanggunganFull()];
+		$this->load->view("admin/tanggungan/report-all-csv",$data);
 	}
 	public function add()
 	{
@@ -48,18 +55,25 @@ class Tanggungan extends CI_Controller {
 					$jenis=$arrinput[1];
 					$smt=(isset($arrinput[2]))?$arrinput[2]:1;
 					$val=$inputan;
+					$query=Array(
+						'mhs_id'=>$mahasiswa,
+						'tgg_semester'=>$smt,
+						'tgg_jenis'=>$jenis,
+						'tgg_nominal'=>$val,
+						'tgg_tahun'=>'2019',
+					);
 					if($val!=''){
-						// $=$this->m_tanggungan->saveTanggungan($query)
-						$query=Array(
-							'mhs_id'=>$mahasiswa,
-							'tgg_semester'=>$smt,
-							'tgg_jenis'=>$jenis,
-							'tgg_nominal'=>$val,
-							'tgg_tahun'=>'2019',
-						);
-
-						if($id=$this->m_tanggungan->saveTanggungan($query)){
-							$savedTanggungan[$id]=$query;
+						if($cek=$this->m_tanggungan->getTanggunganCek($mahasiswa,$jenis,$smt)){
+							//kalau sudah ada
+							if($id=$this->m_tanggungan->updateTanggungan($cek->tgg_id,$query)){
+								$query['asu']=$id;
+								$savedTanggungan[$id]=$query;
+							}
+						}else{
+							//kalau belum ada
+							if($id=$this->m_tanggungan->saveTanggungan($query)){
+								$savedTanggungan[$id]=$query;
+							}
 						}
 					}
 
@@ -186,7 +200,7 @@ class Tanggungan extends CI_Controller {
 		$result=Array();
 		if($tanggungan=$this->m_tanggungan->getTanggunganMahasiswa($mhs_id)){
 			foreach($tanggungan as $name=>$value){
-				if(in_array($value['tgg_jenis'],['SPP','UTS','UAS'])){
+				if(in_array($value['tgg_jenis'],['SPP','UTS','UAS','HER'])){
 					$result["tanggungan_".$value['tgg_jenis']."_".$value['tgg_semester'].""]=$value['tgg_nominal'];
 				}else{
 					$result["tanggungan_".$value['tgg_jenis'].""]=$value['tgg_nominal'];

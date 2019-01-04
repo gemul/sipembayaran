@@ -23,9 +23,62 @@ class M_tanggungan extends CI_Model{
     
         return  $insert_id;
     }
+    function updateTanggungan($id,$data_tanggungan){
+        $this->db->where('tgg_id',$id);
+        $this->db->update($this->table, $data_tanggungan);
+        return  $id;
+    }
 
-    public function getTanggunganFull($mhs_id,$jenis,$semester){
+    public function getTanggunganCek($mhs_id,$jenis,$semester){
         $this->db->from('tanggungan');
+        $this->db->where('mhs_id',$mhs_id);
+        $this->db->where('tgg_jenis',$jenis);
+        $this->db->where('tgg_semester',$semester);
+        $query=$this->db->get();
+        if($query->num_rows()>=1){
+            //tanggungan sudah ditentukan
+            return $query->row();
+        }else{
+            //tanggungan belum ditentukan
+            return false;
+        }
+    }
+    public function getTanggunganFull(){
+        $mahasiswa=$this->db->from('mahasiswa')->where('mhs_deleted',0)->get()->result();
+        $data=Array();
+        $cols=Array(
+            "SPP_1", "SPP_2", "SPP_3", "SPP_4", "SPP_5", "SPP_6", "SPP_7", "SPP_8", "SPP_9", "SPP_10", 
+            "UAS_1", "UAS_2", "UAS_3", "UAS_4", "UAS_5", "UAS_6", "UAS_7", "UAS_8", "UAS_9", "UAS_10", 
+            "UTS_1", "UTS_2", "UTS_3", "UTS_4", "UTS_5", "UTS_6", "UTS_7", "UTS_8", "UTS_9", "UTS_10", 
+            "HER_1", "HER_2", "HER_3", "HER_4", "HER_5", "HER_6", "HER_7", "HER_8", "HER_9", "HER_10", 
+            "HER", "OPSPEK", "UG", "KKN", "SKRIPSI", "WISUDA"
+        );
+        foreach($mahasiswa as $mhs){
+            $pmb=$this->db->from('pembayaran')
+                    ->select(Array('sum(pmb_nominal) as pmb_nominal', 'max(mhs_id) as mhs_id','pmb_jenis','pmb_semester'))
+                    ->group_by(Array('pmb_semester','pmb_jenis'))
+                    ->where('mhs_id',$mhs->mhs_id)
+                    ->where('pmb_deleted',0)
+                    ->get()->result_array();
+            $tgg=$this->db->from('tanggungan')
+                    ->select(Array('tgg_nominal', 'mhs_id','tgg_jenis','tgg_semester'))
+                    // ->group_by(Array('pmb_semester','pmb_jenis'))
+                    ->where('mhs_id',$mhs->mhs_id)
+                    ->where('tgg_deleted',0)
+                    ->get()->result_array();
+            $data[$mhs->mhs_id]=Array(
+                'mhs_id'=>$mhs->mhs_id,
+                'mhs_nim'=>$mhs->mhs_nim,
+                'mhs_nama'=>$mhs->mhs_nama,
+                'pembayaran'=>$pmb,
+                'tanggungan'=>$tgg
+            );
+        }
+        return $data;
+        $this->db->select('mhs_id','tgg_semester','');
+        $this->db->from('tanggungan');
+        $this->db->join('pembayaran');
+
         $this->db->where('mhs_id',$mhs_id);
         $this->db->where('tgg_jenis',$jenis);
         $this->db->where('tgg_semester',$semester);

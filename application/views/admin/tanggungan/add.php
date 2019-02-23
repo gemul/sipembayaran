@@ -200,6 +200,8 @@ function saveTanggungan(){
 				alert("PIN Salah");
 			}else if(result.status=="ok"){
 				alert("Data berhasil disimpan");
+			}else{
+				alert("Data tidak tersimpan. Ada kesalahan");
 			}
 			$('#tombolSimpan').html("Simpan").prop("disabled",false);
 			$('.inputan').prop("disabled",false);

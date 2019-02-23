@@ -43,7 +43,8 @@ class Tanggungan extends CI_Controller {
 	public function save()
 	{
 		$data=$_POST;
-		if($data['pin']!='111111'){
+		
+		if($data['pin']!=$this->config->item('pin_master')){
 			echo json_encode(['status'=>'salah','message'=>'Pin anda salah.']);
 			return false;
 		}else{

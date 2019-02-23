@@ -15,11 +15,18 @@ class Tanggungan extends CI_Controller {
 
 	public function index()
 	{
-		// load view admin/mahasiswa.php
 		$data = Array(
 			"arrJenis"=>$this->m_pembayaran->getJenis()
 		);
 		$this->load->view("admin/tanggungan/add",$data);
+	}
+
+	public function lihat_tanggungan()
+	{
+		$data = Array(
+			// "arrJenis"=>$this->m_pembayaran->getJenis()
+		);
+		$this->load->view("admin/tanggungan/lihat",$data);
 	}
 	
 	public function report_all()
@@ -211,6 +218,35 @@ class Tanggungan extends CI_Controller {
 		}else{
 			$result['status']=0;
 		}
+		echo json_encode($result);
+	}
+	public function ajaxLihatTanggungan(){
+		$mhs_id=$_GET['mahasiswa'];
+		$result=Array();
+		$ajenis=Array("SPP","UTS","UAS","HER", "OPSPEK", "UG", "KKN", "SKRIPSI", "WISUDA");
+		foreach($ajenis as $jenis){
+			if(in_array($jenis,['SPP','UTS','UAS','HER'])){
+				for($semester=1;$semester<=10;$semester++){
+					$nbayar=$this->m_pembayaran->getTerbayar($mhs_id,$jenis,$semester);
+					$nbiaya=$this->m_tanggungan->getTanggungan($mhs_id,$jenis,$semester);
+					$tbiaya=($nbiaya!=false)?number_format($nbiaya,0,",","."):"Belum Ditentukan";
+					$tbayar=($nbayar!=false)?number_format($nbayar,0,",","."):"Belum Ditentukan";
+					$tsisa=number_format($nbayar-$nbiaya,0,",",".");
+					$teks="<div class='tsp_sisa'>".$tsisa."</div><div class='tsp_tanggungan'>Biaya : ".$tbiaya."</div><div class='tsp_terbayar'>Terbayar : ".$tbayar."</div>";
+					$result["tanggungan_".$jenis."_".$semester.""]=$teks;
+				}
+			}else{
+				//pembayaran sekali
+				$nbayar=$this->m_pembayaran->getTerbayar($mhs_id,$jenis,1);
+				$nbiaya=$this->m_tanggungan->getTanggungan($mhs_id,$jenis,1);
+				$tbiaya=number_format($nbiaya,0,",",".");
+				$tbayar=number_format($nbayar,0,",",".");
+				$tsisa=number_format($nbayar-$nbiaya,0,",",".");
+				$teks="<div class='tsp_sisa'>".$tsisa."</div><div class='tsp_tanggungan'>Biaya : ".$tbiaya."</div><div class='tsp_terbayar'>Terbayar : ".$tbayar."</div>";
+				$result["tanggungan_".$jenis.""]=$teks;
+			}
+		}
+		$result['status']=1;
 		echo json_encode($result);
 	}
 }

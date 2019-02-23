@@ -22,7 +22,7 @@
 		<div class="container-fluid">
 			<div class="card">
 				<div class="card-header">
-					Biaya Mahasiswa
+					Tanggungan Biaya Mahasiswa
 				</div>
 				<div class="card-body">
 					<?php
@@ -53,55 +53,46 @@
 						<div class='col-12'>
 							<table class='table table-striped'>
 								<tr>
-									<td>SMT</td>
-									<td>SPP</td>
-									<td>UAS</td>
-									<td>UTS</td>
-									<td>HER</td>
+									<th style='text-align:right;width:15%;'>SMT</th>
+									<th>SPP</th>
+									<th>UAS</th>
+									<th>UTS</th>
+									<th>HER</th>
 								</tr>
 								<?php
 								for($i=1;$i<=10;$i++):
 								?>
 								<tr>
-									<td><?=$i?></td>
-									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_SPP_<?=$i?>" name="tanggungan_SPP_<?=$i?>" ></td>
-									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_UAS_<?=$i?>" name="tanggungan_UAS_<?=$i?>" ></td>
-									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_UTS_<?=$i?>" name="tanggungan_UTS_<?=$i?>" ></td>
-									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_HER_<?=$i?>" name="tanggungan_HER_<?=$i?>" ></td>
+									<td style='text-align:right'><b><?=$i?></b></td>
+									<td><span class='konten' id="tanggungan_SPP_<?=$i?>"></span></td>
+									<td><span class='konten' id="tanggungan_UAS_<?=$i?>"></span></td>
+									<td><span class='konten' id="tanggungan_UTS_<?=$i?>"></span></td>
+									<td><span class='konten' id="tanggungan_HER_<?=$i?>"></span></td>
 								</tr>
 								<?php
 								endfor;
 								?>
 								<tr>
-									<td colspan="4">OPSPEK</td>
-									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_OPSPEK" name="tanggungan_OPSPEK" ></td>
+									<td style='text-align:right'><b>OPSPEK</b></td>
+									<td colspan="4"><span class='konten' id="tanggungan_OPSPEK" ></span></td>
 								</tr>
 								<tr>
-									<td colspan="4">Uang Gedung</td>
-									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_UG" name="tanggungan_UG" ></td>
+									<td style='text-align:right'><b>Uang Gedung</b></td>
+									<td colspan="4"><span class='konten' id="tanggungan_UG" ></span></td>
 								</tr>
 								<tr>
-									<td colspan="4">KKN</td>
-									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_KKN" name="tanggungan_KKN" ></td>
+									<td style='text-align:right'><b>KKN</b></td>
+									<td colspan="4"><span class='konten' id="tanggungan_KKN" ></span></td>
 								</tr>
 								<tr>
-									<td colspan="4">Skripsi</td>
-									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_SKRIPSI" name="tanggungan_SKRIPSI" ></td>
+									<td style='text-align:right'><b>Skripsi</b></td>
+									<td colspan="4"><span class='konten' id="tanggungan_SKRIPSI" ></span></td>
 								</tr>
 								<tr>
-									<td colspan="4">Wisuda</td>
-									<td><input type='text' class='form-control divided inputan' autocomplete='off' disabled="disabled" id="tanggungan_WISUDA" name="tanggungan_WISUDA" ></td>
+									<td style='text-align:right'><b>Wisuda</b></td>
+									<td colspan="4"><span class='konten' id="tanggungan_WISUDA" ></span></td>
 								</tr>
 							</table>
-						</div>
-					</div>
-					<div class="form-group row">
-						<label for="mahasiswa" class="offset-4 col-1 col-form-label">PIN</label> 
-						<div class="col-2">
-						<input type='password' class='form-control inputan' name="pin"  >
-						</div>
-						<div class="col-5">
-						<button type="button" class="btn btn-primary" id="tombolSimpan" onclick="saveTanggungan()" >Simpan</button>
 						</div>
 					</div>
 					</form>
@@ -110,6 +101,21 @@
 			<script>
 			
 			</script>
+			<style>
+				.tsp_sisa {
+					font-size:18px;
+					margin-bottom:-9px;
+				}
+				.tsp_tanggungan {
+					font-size:10px;
+					margin-bottom:-6px;
+					color:red;
+				}
+				.tsp_terbayar {
+					font-size:10px;
+					color:green;
+				}
+			</style>
 		</div>
 		<!-- /.container-fluid -->
 
@@ -211,52 +217,52 @@ function saveTanggungan(){
 
 function updateTanggungan(){
 	var mahasiswa	= selectedMahasiswa;
-	console.log("<?php echo base_url('admin/tanggungan/ajaxBiayaTanggungan') ?>");
+	console.log("<?php echo base_url('admin/tanggungan/ajaxLihatTanggungan') ?>");
 	$.ajax({
-		url:"<?php echo base_url('admin/tanggungan/ajaxBiayaTanggungan') ?>",
+		url:"<?php echo base_url('admin/tanggungan/ajaxLihatTanggungan') ?>",
 		data:{
 			'mahasiswa':mahasiswa 
 		},
 		dataType:"json",
 		type:"GET",
 		beforeSend:function(){
-			$('.inputan').val("Memuat...").prop("disabled",true);
+			$('.konten').html("Memuat...").prop("disabled",true);
 		},
 		success:function(result){
-			$('.inputan').val("").prop("disabled",false);
+			$('.konten').html("Belum Ditentukan");
 			for(var i=1;i<=10;i++){
 				if(result['tanggungan_SPP_'+i]!==undefined){
-					$('#tanggungan_SPP_'+i).val(result['tanggungan_SPP_'+i]);
+					$('#tanggungan_SPP_'+i).html(result['tanggungan_SPP_'+i]);
 				}
 				if(result['tanggungan_UAS_'+i]!==undefined){
-					$('#tanggungan_UAS_'+i).val(result['tanggungan_UAS_'+i]);
+					$('#tanggungan_UAS_'+i).html(result['tanggungan_UAS_'+i]);
 				}
 				if(result['tanggungan_UTS_'+i]!==undefined){
-					$('#tanggungan_UTS_'+i).val(result['tanggungan_UTS_'+i]);
+					$('#tanggungan_UTS_'+i).html(result['tanggungan_UTS_'+i]);
 				}
 				if(result['tanggungan_HER_'+i]!==undefined){
-					$('#tanggungan_HER_'+i).val(result['tanggungan_HER_'+i]);
+					$('#tanggungan_HER_'+i).html(result['tanggungan_HER_'+i]);
 				}
 			}
 			if(result['tanggungan_OPSPEK']!==undefined){
-				$("#tanggungan_OPSPEK").val(result['tanggungan_OPSPEK']);
+				$("#tanggungan_OPSPEK").html(result['tanggungan_OPSPEK']);
 			}
 			if(result['tanggungan_UG']!==undefined){
-				$("#tanggungan_UG").val(result['tanggungan_UG']);
+				$("#tanggungan_UG").html(result['tanggungan_UG']);
 			}
 			if(result['tanggungan_KKN']!==undefined){
-				$("#tanggungan_KKN").val(result['tanggungan_KKN']);
+				$("#tanggungan_KKN").html(result['tanggungan_KKN']);
 			}
 			if(result['tanggungan_SKRIPSI']!==undefined){
-				$("#tanggungan_SKRIPSI").val(result['tanggungan_SKRIPSI']);
+				$("#tanggungan_SKRIPSI").html(result['tanggungan_SKRIPSI']);
 			}
 			if(result['tanggungan_WISUDA']!==undefined){
-				$("#tanggungan_WISUDA").val(result['tanggungan_WISUDA']);
+				$("#tanggungan_WISUDA").html(result['tanggungan_WISUDA']);
 			}
 
 		},
 		error:function(result){
-			$('.inputan').val("Data gagal dimuat").prop("disabled",true);
+			$('.konten').html("Data gagal dimuat").prop("disabled",true);
 		}
 	});
 

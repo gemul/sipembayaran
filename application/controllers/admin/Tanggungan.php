@@ -232,6 +232,9 @@ class Tanggungan extends CI_Controller {
 					$tbiaya=($nbiaya!=false)?number_format($nbiaya,0,",","."):"Belum Ditentukan";
 					$tbayar=($nbayar!=false)?number_format($nbayar,0,",","."):"Belum Ditentukan";
 					$tsisa=number_format($nbayar-$nbiaya,0,",",".");
+					if(($nbayar-$nbiaya)==0 && $nbiaya!=0){
+						$tsisa="<span style='color:green;font-weight:bold;'>LUNAS</span>";
+					}
 					$teks="<div class='tsp_sisa'>".$tsisa."</div><div class='tsp_tanggungan'>Biaya : ".$tbiaya."</div><div class='tsp_terbayar'>Terbayar : ".$tbayar."</div>";
 					$result["tanggungan_".$jenis."_".$semester.""]=$teks;
 				}

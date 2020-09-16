@@ -23,7 +23,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
+<<<<<<< Updated upstream
 $config['base_url'] = 'http://localhost:3000/pembayaran';
+=======
+$config['base_url'] = 'http://localhost/yadika/pembayaran';
+>>>>>>> Stashed changes
 
 /*
 |--------------------------------------------------------------------------
@@ -521,4 +525,4 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
-$config['pin_master'] = '111111';
+$config['pin_master'] = '1111';

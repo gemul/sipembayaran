@@ -104,7 +104,7 @@
 			<style>
 				.tsp_sisa {
 					font-size:18px;
-					margin-bottom:-9px;
+					margin-bottom:-1px;
 				}
 				.tsp_tanggungan {
 					font-size:10px;

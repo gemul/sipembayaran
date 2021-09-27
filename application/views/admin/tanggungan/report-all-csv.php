@@ -33,7 +33,7 @@ foreach($dataTagihan as $item){
         if(in_array($pmb['pmb_jenis'],['SPP','UTS','UAS','HER'])){
             $pembayaran[$pmb['pmb_jenis']."_".$pmb['pmb_semester']]=$pmb['pmb_nominal'];
         }else{
-            $tanggungan[$pmb['pmb_jenis']]=$pmb['pmb_nominal'];
+            $pembayaran[$pmb['pmb_jenis']]=$pmb['pmb_nominal'];
             }
     }
     echo "\"".addslashes($item['mhs_nim'])."\",\"".addslashes($item['mhs_nama'])."\",";
@@ -44,14 +44,14 @@ foreach($dataTagihan as $item){
             if($delta==0){
                 $tagihan="LUNAS";
             }elseif($delta>0){
-                $tagihan=number_format($delta,0,",",".");
+                $tagihan=$delta;
             }else{
-                $tagihan=number_format($delta,0,",",".");
+                $tagihan=$delta;
             }
         }elseif(isset($tanggungan[$col])){
-            $tagihan=number_format(0-$tanggungan[$col],0,",",".");
+            $tagihan=0-$tanggungan[$col];
         }elseif(isset($pembayaran[$col])){
-            $tagihan=number_format($pembayaran[$col],0,",",".");
+            $tagihan=$pembayaran[$col];
         }else{
             $tagihan="";
         }

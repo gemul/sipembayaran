@@ -36,7 +36,7 @@ $cols=Array(
         if(in_array($pmb['pmb_jenis'],['SPP','UTS','UAS','HER'])){
             $pembayaran[$pmb['pmb_jenis']."_".$pmb['pmb_semester']]=$pmb['pmb_nominal'];
         }else{
-            $tanggungan[$pmb['pmb_jenis']]=$pmb['pmb_nominal'];
+            $pembayaran[$pmb['pmb_jenis']]=$pmb['pmb_nominal'];
         }
     }
     ?>
